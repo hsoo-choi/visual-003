@@ -16,33 +16,6 @@ public:
 	{
 	}
 
-	bool isDuplicateNumber(const string& guessNumber)
-	{
-		return guessNumber[0] == guessNumber[1]
-			|| guessNumber[0] == guessNumber[2]
-			|| guessNumber[1] == guessNumber[2];
-	}
-
-	void assertIllegalArgument(const string& guessNumber)
-	{
-		if(guessNumber.length() != 3)
-		{
-			throw length_error("Must be three letters.");
-		}
-
-		for(char ch : guessNumber)
-		{
-			if(ch >= '0' && ch <= '9')
-				continue;
-			throw invalid_argument("Must be number");
-		}
-
-		if(isDuplicateNumber(guessNumber))
-		{
-			throw invalid_argument("Must not have the same number");
-		}
-	}
-
 	GuessResult guess(const string& guessNumber)
 	{
 		assertIllegalArgument(guessNumber);
@@ -53,27 +26,68 @@ public:
 		}
 
 		GuessResult ret = { false, 0, 0 };
+		ret.strikes = getStrikeCnt(guessNumber);
+		ret.balls = getBallCnt(guessNumber);
+		if (ret.strikes == 3) ret.solved = true;
 
-		for (int i = 0; i < 3; ++i)
+		return ret;
+	}
+
+	void assertIllegalArgument(const string& guessNumber)
+	{
+		if (guessNumber.length() != 3)
 		{
-			if (guessNumber[i] == question[i])
-			{
-				ret.strikes++;
-			}
+			throw length_error("Must be three letters.");
 		}
 
-		for(int i =0; i < 3; ++i)
+		for (char ch : guessNumber)
 		{
-			for(int j =0; j < 3; ++j)
+			if (ch >= '0' && ch <= '9')
+				continue;
+			throw invalid_argument("Must be number");
+		}
+
+		if (isDuplicateNumber(guessNumber))
+		{
+			throw invalid_argument("Must not have the same number");
+		}
+	}
+
+private:
+	bool isDuplicateNumber(const string& guessNumber)
+	{
+		return guessNumber[0] == guessNumber[1]
+			|| guessNumber[0] == guessNumber[2]
+			|| guessNumber[1] == guessNumber[2];
+	}
+	
+	int getStrikeCnt(const string& guessNumber)
+	{
+		int cnt = 0;
+		for (int i = 0; i < guessNumber.size(); ++i)
+		{
+			if (guessNumber[i] != question[i]) continue;
+
+			cnt++;
+		}
+		return cnt;
+	}
+
+	int getBallCnt(const string& guessNumber)
+	{
+		int cnt = 0;
+		for (int i = 0; i < guessNumber.size(); ++i)
+		{			
+			for (int j = 0; j < 3; ++j)
 			{
 				if (i == j) continue;
-				if(question[i] == guessNumber[j])
-				{
-					ret.balls++;
-				}
+				if (question[i] != guessNumber[j]) continue;
+
+				cnt++;
+				break;
 			}
 		}
-		return ret;
+		return cnt;
 	}
 
 private:
