@@ -61,21 +61,18 @@ public:
 				ret.strikes++;
 			}
 		}
-			
-#if 0
+
 		for(int i =0; i < 3; ++i)
 		{
 			for(int j =0; j < 3; ++j)
 			{
+				if (i == j) continue;
 				if(question[i] == guessNumber[j])
 				{
-					ret.strikes++;
+					ret.balls++;
 				}
 			}
 		}
-#endif
-
-
 		return ret;
 	}
 
