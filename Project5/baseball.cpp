@@ -46,7 +46,37 @@ public:
 	GuessResult guess(const string& guessNumber)
 	{
 		assertIllegalArgument(guessNumber);
-		return{ true, 3, 0 };
+
+		if (guessNumber == question)
+		{
+			return { true, 3, 0 };
+		}
+
+		GuessResult ret = { false, 0, 0 };
+
+		for (int i = 0; i < 3; ++i)
+		{
+			if (guessNumber[i] == question[i])
+			{
+				ret.strikes++;
+			}
+		}
+			
+#if 0
+		for(int i =0; i < 3; ++i)
+		{
+			for(int j =0; j < 3; ++j)
+			{
+				if(question[i] == guessNumber[j])
+				{
+					ret.strikes++;
+				}
+			}
+		}
+#endif
+
+
+		return ret;
 	}
 
 private:
